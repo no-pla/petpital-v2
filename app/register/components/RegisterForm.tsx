@@ -22,8 +22,21 @@ const RegisterForm = () => {
     mode: "onChange",
   });
 
-  const onSubmit = ({ email, password, nickname }: RegisterData) => {
-    console.log(email, password, nickname);
+  const onSubmit = async ({ email, password, nickname }: RegisterData) => {
+    try {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        body: JSON.stringify({ email, password, nickname }),
+      });
+      const response = await res.json();
+      console.log(response);
+      if (!response.ok) {
+        throw new Error(response.message);
+      }
+    } catch (error) {
+      //TODO: 에러 핸들링
+      console.log(error);
+    }
   };
 
   return (
@@ -43,7 +56,7 @@ const RegisterForm = () => {
             },
             pattern: {
               value: emailRegex,
-              message: "이메일 형식 틀림",
+              message: "이메일 형식이 옳지 않습니다.",
             },
           }}
         />
@@ -58,7 +71,7 @@ const RegisterForm = () => {
             },
             pattern: {
               value: passwordRegex,
-              message: "비번 형식 틀림",
+              message: "비밀번호 형식이 옳지 않습니다.",
             },
           }}
         />
