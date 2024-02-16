@@ -3,40 +3,45 @@ import React from "react";
 import CustomInput from "./CustomInput";
 import { useForm, FormProvider } from "react-hook-form";
 import { emailRegex, passwordRegex } from "@/share/utils";
+import { useRouter } from "next/navigation";
 
 interface RegisterData {
   email: string;
   password: string;
   confirmPassword: string;
-  nickname: string;
+  name: string;
 }
 
 const RegisterForm = () => {
+  const router = useRouter();
   const methods = useForm<RegisterData>({
     defaultValues: {
       email: "",
       password: "",
       confirmPassword: "",
-      nickname: "",
+      name: "",
     },
     mode: "onChange",
   });
 
-  const onSubmit = async ({ email, password, nickname }: RegisterData) => {
+  const onSubmit = async ({ email, password, name }: RegisterData) => {
     try {
       const res = await fetch("/api/register", {
         method: "POST",
-        body: JSON.stringify({ email, password, nickname }),
+        body: JSON.stringify({ email, password, name }),
+        headers: { "Content-Type": "application/json" },
       });
       const response = await res.json();
       console.log(response);
-      if (!response.ok) {
+      if (response.ok === false) {
         throw new Error(response.message);
       }
     } catch (error) {
       //TODO: 에러 핸들링
       console.log(error);
+      return;
     }
+    router.push("/login");
   };
 
   return (
@@ -91,7 +96,7 @@ const RegisterForm = () => {
         />
         <CustomInput
           type="text"
-          label="nickname"
+          label="name"
           placeholder="닉네임"
           validation={{
             minLength: {
