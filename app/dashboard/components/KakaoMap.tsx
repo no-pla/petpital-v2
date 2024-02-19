@@ -12,6 +12,7 @@ const KakaoMap = () => {
     errMsg: null,
     isLoading: true,
   });
+  const [mapType, setMapType] = useState<"roadmap" | "skyview">("roadmap");
 
   useEffect(() => {
     // 지도 띄울 때 현재 위치로 고정
@@ -48,11 +49,37 @@ const KakaoMap = () => {
   }, []);
 
   return (
-    <Map
-      id="map"
-      center={state.center}
-      style={{ width: "100vw", height: "100vh" }}
-    ></Map>
+    <>
+      <div className="z-10 absolute right-2 top-2 bg-white rounded p-[2px] flex">
+        <div
+          id="btnRoadmap"
+          className={`rounded-[2px] cursor-pointer p-2 ${
+            mapType === "roadmap" ? "bg-white" : "bg-[#15B5BF]"
+          } ${mapType === "roadmap" ? "text-black" : "text-white"}
+          `}
+          onClick={() => setMapType("roadmap")}
+        >
+          지도
+        </div>
+        <div
+          id="btnSkyview"
+          className={`rounded-[2px] cursor-pointer p-2 box-content ${
+            mapType === "skyview" ? "bg-white" : "bg-[#15B5BF]"
+          } ${mapType === "skyview" ? "text-black" : "text-white"}`}
+          onClick={() => {
+            setMapType("skyview");
+          }}
+        >
+          스카이뷰
+        </div>
+      </div>
+      <Map
+        id="map"
+        center={state.center}
+        style={{ width: "100vw", height: "100vh" }}
+        mapTypeId={mapType === "roadmap" ? "ROADMAP" : "HYBRID"}
+      ></Map>
+    </>
   );
 };
 
