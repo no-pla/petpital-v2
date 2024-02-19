@@ -8,6 +8,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useSearchParams } from "next/navigation";
 
 const KakaoMap = () => {
   const [state, setState] = useState<any>({
@@ -24,51 +25,69 @@ const KakaoMap = () => {
   const setHospitalArray = useSetRecoilState(hospitalDataArray);
   const setPagination = useSetRecoilState(pagination);
 
+  const searchParams = useSearchParams();
+  const name = searchParams.get("name");
+  const loc = searchParams.get("loc");
+  const lat = searchParams.get("lat");
+  const lng = searchParams.get("lng");
+
   const [info, setInfo] = useState<any>();
   const [markers, setMarkers] = useState<any>([]);
   const [map, setMap] = useState<any>();
 
   useEffect(() => {
     // 지도 띄울 때 현재 위치로 고정
-    // TODO: 메인 화면 병원 클릭해서 들어왔을 때는 작동하지 않도록 처리해야 함.
-    if (navigator.geolocation) {
-      // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setState((prev: any) => ({
-            ...prev,
-            center: {
-              lat: position.coords.latitude, // 위도
-              lng: position.coords.longitude, // 경도
-            },
-            isLoading: false,
-          }));
-        },
-        (err) => {
-          setState((prev: any) => ({
-            ...prev,
-            errMsg: err.message,
-            isLoading: false,
-          }));
-        }
-      );
-    } else {
-      // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
+    if (lat && lng) {
       setState((prev: any) => ({
         ...prev,
-        errMsg: "geolocation을 사용할수 없어요..",
+        center: {
+          lat: lat, // 위도
+          lng: lng, // 경도
+        },
         isLoading: false,
       }));
+      return;
+    } else {
+      if (navigator.geolocation) {
+        // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setState((prev: any) => ({
+              ...prev,
+              center: {
+                lat: position.coords.latitude, // 위도
+                lng: position.coords.longitude, // 경도
+              },
+              isLoading: false,
+            }));
+          },
+          (err) => {
+            setState((prev: any) => ({
+              ...prev,
+              errMsg: err.message,
+              isLoading: false,
+            }));
+          }
+        );
+      } else {
+        // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
+        setState((prev: any) => ({
+          ...prev,
+          errMsg: "geolocation을 사용할수 없어요..",
+          isLoading: false,
+        }));
+      }
     }
   }, []);
 
   useEffect(() => {
     if (!map) return;
-    if (hospital === "") return;
+    // if (hospital === "" && name === "") return;
     const ps = new kakao.maps.services.Places();
 
+    const hospitalName = !hospital ? `${loc} ${name}` : hospital + "동물병원";
     ps.keywordSearch(
-      hospital + "동물병원",
+      hospitalName,
       (data, status, pagination) => {
         console.log(status);
         if (status === kakao.maps.services.Status.ZERO_RESULT) {
@@ -148,11 +167,7 @@ const KakaoMap = () => {
             key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
             position={marker.position}
             onClick={() => setInfo(marker)}
-          >
-            {info && info.content === marker.content && (
-              <div style={{ color: "#000" }}>{marker.content}</div>
-            )}
-          </MapMarker>
+          ></MapMarker>
         ))}
       </Map>
     </>
@@ -160,9 +175,3 @@ const KakaoMap = () => {
 };
 
 export default KakaoMap;
-
-/**
- * TODO: 오늘 할 일
- * 1. 페이지네이션
- * 2. 목록 띄우기
- */

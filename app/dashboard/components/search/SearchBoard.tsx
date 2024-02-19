@@ -2,12 +2,27 @@
 
 import React from "react";
 import SearchInput from "./SearchInput";
-import { useRecoilValue } from "recoil";
-import { hospitalDataArray, pagination as paginationArray } from "@/share/atom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import {
+  hospitalDataArray,
+  pagination as paginationArray,
+  selectedHospital,
+} from "@/share/atom";
+import { useRouter } from "next/navigation";
 
 const SearchBoard = () => {
   const hospitals = useRecoilValue(hospitalDataArray);
   const pagination = useRecoilValue(paginationArray);
+  const setHospital = useSetRecoilState(selectedHospital);
+  const router = useRouter();
+
+  const onClickHospital = (hospital: any) => {
+    setHospital(hospital);
+    console.log(hospital);
+    router.replace(
+      `/dashboard?loc=${hospital.address_name}&name=${hospital.place_name}&lng=${hospital.x}&lat=${hospital.y}`
+    );
+  };
 
   return (
     <div>
@@ -16,7 +31,7 @@ const SearchBoard = () => {
         <div>
           {hospitals.map((hospital: any, index: number) => {
             return (
-              <div key={hospital.id}>
+              <div key={hospital.id} onClick={() => onClickHospital(hospital)}>
                 <span>{String.fromCharCode(65 + index)}</span>
                 {hospital.place_name}
               </div>
