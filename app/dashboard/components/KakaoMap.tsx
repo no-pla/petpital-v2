@@ -1,7 +1,13 @@
 "use client";
 
+import {
+  hospitalDataArray,
+  pagination,
+  searchHospitalWord,
+} from "@/share/atom";
 import React, { useEffect, useState } from "react";
-import { Map } from "react-kakao-maps-sdk";
+import { Map, MapMarker } from "react-kakao-maps-sdk";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 const KakaoMap = () => {
   const [state, setState] = useState<any>({
@@ -12,7 +18,15 @@ const KakaoMap = () => {
     errMsg: null,
     isLoading: true,
   });
+
   const [mapType, setMapType] = useState<"roadmap" | "skyview">("roadmap");
+  const hospital = useRecoilValue(searchHospitalWord);
+  const setHospitalArray = useSetRecoilState(hospitalDataArray);
+  const setPagination = useSetRecoilState(pagination);
+
+  const [info, setInfo] = useState<any>();
+  const [markers, setMarkers] = useState<any>([]);
+  const [map, setMap] = useState<any>();
 
   useEffect(() => {
     // 지도 띄울 때 현재 위치로 고정
@@ -48,6 +62,55 @@ const KakaoMap = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (!map) return;
+    if (hospital === "") return;
+    const ps = new kakao.maps.services.Places();
+
+    ps.keywordSearch(
+      hospital + "동물병원",
+      (data, status, pagination) => {
+        console.log(status);
+        if (status === kakao.maps.services.Status.ZERO_RESULT) {
+          // TODO: 검색 결과 없을 때 처리
+        }
+        if (status === kakao.maps.services.Status.OK) {
+          // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+          // LatLngBounds 객체에 좌표를 추가합니다
+          const bounds = new kakao.maps.LatLngBounds();
+          let markers = [];
+
+          for (var i = 0; i < data.length; i++) {
+            // @ts-ignore
+            markers.push({
+              position: {
+                lat: data[i].y,
+                lng: data[i].x,
+              },
+              content: data[i].place_name,
+            });
+            // }
+
+            // @ts-ignore
+            bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+          }
+
+          setMarkers(markers);
+
+          // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+          map.setBounds(bounds);
+        }
+        if (pagination.first !== pagination.last && pagination.last > 1) {
+          setPagination(pagination);
+        }
+        setHospitalArray(data);
+      },
+      {
+        category_group_code: "HP8",
+      }
+    );
+  }, [hospital, map]);
+
   return (
     <>
       <div className="z-10 absolute right-2 top-2 bg-white rounded p-[2px] flex">
@@ -78,9 +141,28 @@ const KakaoMap = () => {
         center={state.center}
         style={{ width: "100vw", height: "100vh" }}
         mapTypeId={mapType === "roadmap" ? "ROADMAP" : "HYBRID"}
-      ></Map>
+        onCreate={setMap}
+      >
+        {markers.map((marker: any) => (
+          <MapMarker
+            key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
+            position={marker.position}
+            onClick={() => setInfo(marker)}
+          >
+            {info && info.content === marker.content && (
+              <div style={{ color: "#000" }}>{marker.content}</div>
+            )}
+          </MapMarker>
+        ))}
+      </Map>
     </>
   );
 };
 
 export default KakaoMap;
+
+/**
+ * TODO: 오늘 할 일
+ * 1. 페이지네이션
+ * 2. 목록 띄우기
+ */
