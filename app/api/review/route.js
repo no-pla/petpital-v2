@@ -64,3 +64,24 @@ export async function POST(req) {
 
   return NextResponse.json(post);
 }
+
+export async function GET(req) {
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
+  let reviews;
+  try {
+    reviews = await prisma.reviews.findMany({
+      where: {
+        hospitalId: id,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json({
+      ok: false,
+      message: "알 수 없는 오류가 발생했습니다.",
+    });
+  }
+
+  return NextResponse.json({ reviews: reviews });
+}

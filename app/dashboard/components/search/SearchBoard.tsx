@@ -6,6 +6,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import {
   hospitalDataArray,
   pagination as paginationArray,
+  reviewOpen,
   selectedHospital,
 } from "@/share/atom";
 import { useRouter } from "next/navigation";
@@ -18,9 +19,8 @@ const SearchBoard = () => {
 
   const onClickHospital = (hospital: any) => {
     setHospital(hospital);
-    console.log(hospital);
     router.replace(
-      `/dashboard?loc=${hospital.address_name}&name=${hospital.place_name}&lng=${hospital.x}&lat=${hospital.y}`
+      `/dashboard?loc=${hospital.address_name}&name=${hospital.place_name}&lng=${hospital.x}&lat=${hospital.y}&id=${hospital.id}`
     );
   };
 
