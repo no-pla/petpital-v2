@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import ReviewInput from "./ReviewInput";
 import PhotoUploader from "./PhotoUploader";
-import StarRate from "./StarRate";
-import SelectedHospitalMap from "./SelectedHospitalMap";
-import { selectedHospital } from "@/share/atom";
+import SelectedHospitalMap from "../SelectedHospitalMap";
+import { reviewCategories, selectedHospital } from "@/share/atom";
 import { useRecoilValue } from "recoil";
-import { StaticMap } from "react-kakao-maps-sdk";
+import { useSession } from "next-auth/react";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import { storageService } from "@/firebase/firebase";
+import { Rating } from "react-simple-star-rating";
+import CategoriesForm from "./CategoriesForm";
 
 interface ReviewData {
   photo: string[];
@@ -19,34 +22,67 @@ interface ReviewData {
 
 const ReviewForm = () => {
   const hospitalData = useRecoilValue(selectedHospital);
+  const categories = useRecoilValue(reviewCategories);
+  const { data: session }: any = useSession({
+    required: true,
+  });
   const methods = useForm({
     defaultValues: {
-      photo: "",
       title: "",
       review: "",
       totalAmounts: "",
       rate: "",
-      categories: [],
     },
     mode: "onChange",
   });
+  const [rating, setRating] = useState(0);
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const handleRating = (rate: number) => {
+    setRating(rate);
+    console.log(rate);
   };
 
-  console.log(hospitalData);
+  const onSubmit = async (data: any) => {
+    const reviewImage = localStorage.getItem("preview-image");
+    const imgRef = ref(storageService, `${session.user.id}/${Date.now()}`);
+    let downloadUrl;
+    if (reviewImage) {
+      const response = await uploadString(imgRef, reviewImage, "data_url");
+      downloadUrl = await getDownloadURL(response.ref);
+    }
+
+    try {
+      const res = await fetch("/api/review", {
+        body: JSON.stringify({
+          ...data,
+          photo: downloadUrl ?? "",
+          hospitalId: hospitalData.id,
+          userId: session?.user?.id,
+          categories,
+          rate: rating,
+        }),
+        method: "POST",
+      });
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    localStorage.removeItem("preview-image");
+  }, []);
 
   return (
     <>
       {hospitalData && (
-        <div className="h-screen absolute top-0 left-0 bg-white w-full px-3">
-          <div>병원 이미지</div>
+        <div className="h-screen absolute top-0 left-0 bg-white w-full px-3 overflow-scroll">
           <PhotoUploader />
           <FormProvider {...methods}>
             <form
               onSubmit={methods.handleSubmit((data) => onSubmit(data))}
               className="flex flex-col gap-2"
+              id="reviewForm"
             >
               <ReviewInput
                 label="title"
@@ -82,14 +118,25 @@ const ReviewForm = () => {
                   },
                 }}
               />
-              <StarRate />
-              <ReviewInput
-                label="categories"
-                placeholder="EX. 저렴해요, 깨끗해요"
-              />
-              <button>제출</button>
             </form>
           </FormProvider>
+          <div>
+            <div>별점</div>
+            <Rating
+              onClick={handleRating}
+              SVGstyle={{ display: "inline-block" }}
+              allowFraction
+              allowHover
+              size={40}
+              SVGstrokeColor="#15B5BF"
+              fillColor="#15B5BF"
+              initialValue={0}
+            />
+          </div>
+          <CategoriesForm />
+          <button type="submit" form="reviewForm">
+            제출
+          </button>
           <SelectedHospitalMap
             lng={hospitalData.x}
             lat={hospitalData.y}

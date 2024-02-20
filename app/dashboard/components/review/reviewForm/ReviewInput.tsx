@@ -6,6 +6,7 @@ const ReviewInput = ({ label, placeholder, validation }: any) => {
     register,
     formState: { errors },
   } = useFormContext();
+
   return (
     <>
       <input {...register(`${label}`, validation)} placeholder={placeholder} />

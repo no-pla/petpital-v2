@@ -14,3 +14,13 @@ export const pagination = atom<any>({
   key: "pagination",
   default: null,
 });
+
+export const selectedHospital = atom<any>({
+  key: "selectedHospital",
+  default: null,
+});
+
+export const reviewCategories = atom<any[]>({
+  key: "reviewCategories",
+  default: [],
+});

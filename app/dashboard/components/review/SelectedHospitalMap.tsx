@@ -4,7 +4,6 @@ import React from "react";
 import { StaticMap } from "react-kakao-maps-sdk";
 
 const SelectedHospitalMap = ({ lng, lat, hospitalName, address }: any) => {
-  // console.log(x, y);
   return (
     <>
       <div>동물병원 주소</div>
