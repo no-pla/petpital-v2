@@ -1,10 +1,12 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import ReviewInput from "./ReviewInput";
 import PhotoUploader from "./PhotoUploader";
 import SelectedHospitalMap from "../SelectedHospitalMap";
-import { reviewCategories, selectedHospital } from "@/share/atom";
-import { useRecoilValue } from "recoil";
+import { reviewCategories, reviewOpen, selectedHospital } from "@/share/atom";
+import { useRecoilValue, useResetRecoilState, useSetRecoilState } from "recoil";
 import { useSession } from "next-auth/react";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { storageService } from "@/firebase/firebase";
@@ -23,9 +25,12 @@ interface ReviewData {
 const ReviewForm = () => {
   const hospitalData = useRecoilValue(selectedHospital);
   const categories = useRecoilValue(reviewCategories);
+  const resetCategories = useResetRecoilState(reviewCategories);
+  const setReviewOpen = useSetRecoilState(reviewOpen);
   const { data: session }: any = useSession({
     required: true,
   });
+
   const methods = useForm({
     defaultValues: {
       title: "",
@@ -39,7 +44,6 @@ const ReviewForm = () => {
 
   const handleRating = (rate: number) => {
     setRating(rate);
-    console.log(rate);
   };
 
   const onSubmit = async (data: any) => {
@@ -52,7 +56,7 @@ const ReviewForm = () => {
     }
 
     try {
-      const res = await fetch("/api/review", {
+      const res: any = await fetch("/api/review", {
         body: JSON.stringify({
           ...data,
           photo: downloadUrl ?? "",
@@ -60,17 +64,23 @@ const ReviewForm = () => {
           userId: session?.user?.id,
           categories,
           rate: rating,
+          createdAt: new Date().toLocaleDateString("ko-KR"),
         }),
         method: "POST",
       });
-      console.log(res);
+      if (!res.ok) {
+        throw new Error(res?.message);
+      }
     } catch (error) {
       console.log(error);
+      return;
     }
+    setReviewOpen(false);
   };
 
   useEffect(() => {
     localStorage.removeItem("preview-image");
+    resetCategories();
   }, []);
 
   return (

@@ -13,6 +13,7 @@ export async function POST(req) {
     hospitalId,
     userId,
     categories,
+    createdAt,
   } = await req.json();
 
   if (!userId) {
@@ -29,7 +30,7 @@ export async function POST(req) {
     });
   }
 
-  if (!hospitalId) {
+  if (!hospitalId || !createdAt) {
     return NextResponse.json({
       ok: false,
       message: "알 수 없는 오류가 발생했습니다.",
@@ -52,6 +53,7 @@ export async function POST(req) {
         hospitalId,
         userId,
         categories,
+        createdAt,
       },
     });
   } catch (error) {
@@ -74,6 +76,9 @@ export async function GET(req) {
       where: {
         hospitalId: id,
       },
+      include: {
+        user: true,
+      },
     });
   } catch (error) {
     console.log(error);
@@ -84,4 +89,44 @@ export async function GET(req) {
   }
 
   return NextResponse.json({ reviews: reviews });
+}
+
+export async function DELETE(req) {
+  const { reviewId, userId } = await req.json();
+  console.log(reviewId, userId);
+
+  // 리뷰 아이디 기반으로 리뷰 가져오기
+  const exist = await prisma.reviews.findUnique({
+    where: {
+      id: reviewId,
+    },
+  });
+  // 리뷰가 존재하는지 확인
+
+  if (!exist) {
+    return NextResponse.json({
+      ok: false,
+      message: "이미 삭제된 리뷰입니다.",
+    });
+  }
+  // 리뷰에 저장된 userId랑 작성자 아이디랑 같은지 확인
+  if (exist.userId !== userId) {
+    return NextResponse.json({
+      ok: false,
+      message: "본인이 작성한 리뷰만 삭제할 수 있습니다.",
+    });
+  }
+  // 같으면 삭제
+
+  try {
+    await prisma.reviews.delete({
+      where: {
+        id: reviewId,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+
+  return NextResponse.json(null);
 }

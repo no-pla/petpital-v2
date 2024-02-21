@@ -24,3 +24,8 @@ export const reviewCategories = atom<any[]>({
   key: "reviewCategories",
   default: [],
 });
+
+export const reviewOpen = atom<boolean>({
+  key: "reviewOpen",
+  default: false,
+});

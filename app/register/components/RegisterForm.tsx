@@ -1,4 +1,5 @@
 "use client";
+
 import React from "react";
 import CustomInput from "./CustomInput";
 import { useForm, FormProvider } from "react-hook-form";
@@ -32,7 +33,6 @@ const RegisterForm = () => {
         headers: { "Content-Type": "application/json" },
       });
       const response = await res.json();
-      console.log(response);
       if (response.ok === false) {
         throw new Error(response.message);
       }
