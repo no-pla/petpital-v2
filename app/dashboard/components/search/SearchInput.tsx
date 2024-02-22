@@ -1,8 +1,8 @@
 "use client";
 
-import { searchHospitalWord } from "@/share/atom";
 import React, { useRef } from "react";
 import { useSetRecoilState } from "recoil";
+import { searchHospitalWord } from "@/share/atom";
 
 const SearchInput = () => {
   const searchRef = useRef<HTMLInputElement>(null);
@@ -15,12 +15,12 @@ const SearchInput = () => {
   };
 
   return (
-    <div className="relative">
-      <p className="absolute">🔍</p>
-      <form onSubmit={(event) => onSubmit(event)}>
+    <div className="bg-[#15B5BF] relative flex py-2 gap-1">
+      <div className="h-10 w-10 px-1 flex justify-center items-center">🤎</div>
+      <form onSubmit={(event) => onSubmit(event)} className="w-full h-max pr-6">
         <input
           ref={searchRef}
-          className="w-full rounded-[2px]"
+          className="py-2 px-2 w-full rounded-[2px] border-[#000] border-[0.4px] outline-none"
           placeholder="동물병원을 입력해 보세요."
         />
       </form>

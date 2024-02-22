@@ -21,6 +21,7 @@
     "react-kakao-maps-sdk": "^1.1.26",
     "react-simple-star-rating": "^5.1.7",
     "recoil": "^0.7.7",
+    "tailwind-scrollbar-hide": "^1.1.7",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

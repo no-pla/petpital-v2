@@ -1,8 +1,12 @@
 import React from "react";
+import DashBoardHeader from "./DashBoardHeader";
 
 const DashBoard = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="w-[375px] h-screen bg-white absolute top-0 left-0 z-20 border-r-[8px] border-[#D9D9D9]">
+    <div
+      className={`scrollbar-hide w-[375px] z-10 bg-white border-r-2 overflow-y-scroll`}
+    >
+      <DashBoardHeader />
       {children}
     </div>
   );
