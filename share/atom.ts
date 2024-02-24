@@ -1,5 +1,10 @@
 import { atom } from "recoil";
 
+interface dashboard {
+  first: boolean;
+  second: boolean;
+}
+
 export const searchHospitalWord = atom<string>({
   key: "searchHospitalWord",
   default: "",
@@ -28,4 +33,17 @@ export const reviewCategories = atom<any[]>({
 export const reviewOpen = atom<boolean>({
   key: "reviewOpen",
   default: false,
+});
+
+export const selectedReview = atom<any>({
+  key: "selectedReview",
+  default: {},
+});
+
+export const dashboard = atom<dashboard>({
+  key: "dashboard",
+  default: {
+    first: true,
+    second: false,
+  },
 });

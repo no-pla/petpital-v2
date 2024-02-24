@@ -4,7 +4,7 @@ import DashBoardContainer from "./components/DashBoardContainer";
 
 const Page = () => {
   return (
-    <div>
+    <div className="h-screen">
       <DashBoardContainer />
       <KakaoMap />
     </div>
@@ -13,10 +13,14 @@ const Page = () => {
 
 export default Page;
 
-/** TODO:
- * 1. 대쉬보드 만들기 검색창 / 리뷰창
- * 2. CRUD - Create & Read까지 - 완료
- * 3. 현재 위치로 띄우기 - 완료
- * 4. 스카이뷰 토글 추가 - 완료
- * 5. 날씨 데이터 추가 -
+/**
+ * TODO:
+ * 1. 리뷰 UPDATE
+ * 4. 프로필 업데이트/삭제
+ * 3. 마이 페이지 스타일
+ * 5. 최근 리뷰 GET
+ * 6. 병원 리스트 GET
+ * 7. 메인 페이지 스타일
+ * 카테고리 빈 단어 전달 시 처리
+ * 에러 모달
  */

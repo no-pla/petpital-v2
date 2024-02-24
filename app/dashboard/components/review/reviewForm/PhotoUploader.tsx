@@ -32,7 +32,11 @@ const PhotoUploader = () => {
   };
 
   return (
-    <div>
+    <div className="px-3 mt-8 mb-10">
+      <div className="font-bold text-[14px]">사진 인증</div>
+      <p className="text-[#c5c5c5] text-[10px] mt-1 mb-2">
+        영수증, 병원 등 다른 회원님들에게 도움 될 만한 이미지를 공유해 주세요.
+      </p>
       {photoList ? (
         <Image
           src={photoList[0]}
@@ -45,7 +49,7 @@ const PhotoUploader = () => {
       ) : (
         <label
           htmlFor="reviewImage"
-          className="h-[196px] bg-red-200 w-full flex items-center justify-center"
+          className="h-[196px] bg-[#FAFAFA] w-full flex items-center justify-center"
         >
           사진 올리기
         </label>

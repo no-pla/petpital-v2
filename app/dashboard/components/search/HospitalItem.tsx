@@ -1,20 +1,23 @@
 import React from "react";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { useRouter } from "next/navigation";
 import { selectedHospital } from "@/share/atom";
+import { dashboard as dashboardAtom } from "@/share/atom";
 
 const HospitalItem = ({ hospital, index }: any) => {
   const router = useRouter();
   const setHospital = useSetRecoilState(selectedHospital);
+  const [dashboard, setDashboard] = useRecoilState(dashboardAtom);
 
   const onClickHospital = (hospital: any) => {
     setHospital(hospital);
+    setDashboard((prev) => {
+      return { first: prev.first, second: true };
+    });
     router.replace(
       `/dashboard?loc=${hospital.address_name}&name=${hospital.place_name}&lng=${hospital.x}&lat=${hospital.y}&id=${hospital.id}`
     );
   };
-
-  console.log(hospital);
 
   return (
     <div

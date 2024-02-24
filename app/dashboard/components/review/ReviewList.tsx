@@ -1,57 +1,32 @@
 "use client";
 
-import { useSession } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React from "react";
+import ReviewItem from "./reviewForm/ReviewItem";
+import { reviewOpen } from "@/share/atom";
+import { useRecoilState } from "recoil";
 
-const ReviewList = () => {
-  const { data: session, status }: any = useSession({
-    required: true,
-  });
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id");
-  const [data, setData] = useState<any>(null);
-  const getReviews = async () => {
-    const res = await fetch(`/api/review?id=${id}`, {
-      method: "GET",
-    });
-
-    const reviewData = await res.json();
-    setData(reviewData);
-  };
-
-  useEffect(() => {
-    getReviews();
-  }, [id]);
-
-  const onDelete = async (reviewId: string) => {
-    if (status === "loading" || session.user === undefined) return;
-    const userId = session.user?.id!;
-    const res = await fetch("/api/review", {
-      method: "DELETE",
-      body: JSON.stringify({ reviewId, userId }),
-    });
-    if (res.ok) {
-      getReviews();
-    }
-  };
+const ReviewList = ({ reviews, onDelete }: any) => {
+  const [review, setReview] = useRecoilState(reviewOpen);
 
   return (
-    <div>
-      {data?.reviews?.length ? (
-        <>
-          {data?.reviews.map((res: any) => {
-            return (
-              <div key={res.id}>
-                <div>{res.review}</div>
-                <button onClick={() => onDelete(res.id)}>삭제</button>
-              </div>
-            );
+    <div className="h-[calc(100%-460px)] relative">
+      {reviews?.length ? (
+        <div className="flex flex-col min-h-full">
+          {reviews?.map((res: any) => {
+            return <ReviewItem key={res.id} review={res} onDelete={onDelete} />;
           })}
-        </>
+        </div>
       ) : (
-        <div>작성된 리뷰가 없습니다.</div>
+        <div className="text-center flex justify-center items-center h-full">
+          작성된 리뷰가 없습니다.
+        </div>
       )}
+      <button
+        className="sticky bottom-0 left-0 w-full py-3 font-bold text-white bg-[#15b5bf]"
+        onClick={() => setReview(true)}
+      >
+        리뷰 참여하기
+      </button>
     </div>
   );
 };

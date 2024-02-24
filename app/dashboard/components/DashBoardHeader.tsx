@@ -1,16 +1,23 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
-import SearchInput from "./search/SearchInput";
 
-const DashBoardHeader = () => {
-  const router = useRouter();
+const DashBoardHeader = ({
+  second,
+  closeFunc,
+}: {
+  second?: boolean;
+  closeFunc: () => void;
+}) => {
   return (
-    <div className="bg-[#15B5BF] p-2 sticky top-0 left-0 z-10">
+    <div
+      className={`${
+        second ? "bg-transparent" : "bg-[#15B5BF]"
+      } p-4 sticky top-0 left-0 z-10 w-full text-black text-[12px]`}
+    >
       <div className="flex justify-between">
-        <button onClick={() => router.push("/")}>이전으로</button>
-        <button>닫기</button>
+        <button>이전으로</button>
+        <button onClick={closeFunc}>닫기</button>
       </div>
     </div>
   );
