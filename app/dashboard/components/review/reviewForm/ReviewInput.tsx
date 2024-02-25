@@ -1,7 +1,23 @@
 import React from "react";
 import { useFormContext } from "react-hook-form";
 
-const ReviewInput = ({ label, placeholder, validation, title, sub }: any) => {
+interface ReviewInputData {
+  label: string;
+  placeholder: string;
+  validation: any;
+  title: string;
+  sub: string;
+  defaultValue?: string;
+}
+
+const ReviewInput = ({
+  label,
+  placeholder,
+  validation,
+  title,
+  sub,
+  defaultValue,
+}: ReviewInputData) => {
   const {
     register,
     formState: { errors },
@@ -15,6 +31,7 @@ const ReviewInput = ({ label, placeholder, validation, title, sub }: any) => {
         <textarea
           {...register(`${label}`, validation)}
           placeholder={placeholder}
+          defaultValue={defaultValue}
           className="w-full bg-[#FAFAFA] h-20 text-[14px] p-2 resize-none"
         />
       ) : (
@@ -22,6 +39,7 @@ const ReviewInput = ({ label, placeholder, validation, title, sub }: any) => {
           {...register(`${label}`, validation)}
           placeholder={placeholder}
           className={`bg-[#FAFAFA] p-2 w-full text-[14px]`}
+          defaultValue={defaultValue}
         />
       )}
       <p className="text-red-300 text-[10px] mt-1 mb-2">

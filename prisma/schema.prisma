@@ -33,7 +33,7 @@ model Reviews {
   id           String  @id @default(auto()) @map("_id") @db.ObjectId
   title        String
   review       String
-  totalAmounts String
+  totalAmounts Float
   rate         Float
   photo        String?
   hospitalId   String

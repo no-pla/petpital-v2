@@ -1,11 +1,11 @@
 "use client";
 
 import { reviewCategories } from "@/share/atom";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useRecoilState } from "recoil";
 import { v4 as uuidv4 } from "uuid";
 
-const CategoriesForm = () => {
+const CategoriesForm = ({ defaultCategories }: any) => {
   const [categories, setCategories] = useRecoilState(reviewCategories);
   const keywordRef = useRef<HTMLInputElement>(null);
 
@@ -28,6 +28,12 @@ const CategoriesForm = () => {
   const onDeleteCategory = (id: string) => {
     setCategories((prev) => prev.filter((category: any) => category.id !== id));
   };
+
+  useEffect(() => {
+    if (defaultCategories) {
+      setCategories(defaultCategories);
+    }
+  }, []);
 
   return (
     <div className="px-3 my-4">

@@ -88,12 +88,11 @@ export async function GET(req) {
     });
   }
 
-  return NextResponse.json({ reviews: reviews });
+  return NextResponse.json(reviews);
 }
 
 export async function DELETE(req) {
   const { reviewId, userId } = await req.json();
-  console.log(reviewId, userId);
 
   // 리뷰 아이디 기반으로 리뷰 가져오기
   const exist = await prisma.reviews.findUnique({
@@ -129,4 +128,34 @@ export async function DELETE(req) {
   }
 
   return NextResponse.json(null);
+}
+
+export async function PATCH(req) {
+  const {
+    title,
+    review,
+    totalAmounts,
+    rate,
+    photo,
+    userId,
+    categories,
+    postId,
+  } = await req.json();
+
+  const post = await prisma.reviews.updateMany({
+    where: {
+      id: postId,
+    },
+    data: {
+      title,
+      review,
+      totalAmounts,
+      rate,
+      photo,
+      userId,
+      categories,
+    },
+  });
+
+  return NextResponse.json(post);
 }

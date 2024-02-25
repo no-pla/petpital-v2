@@ -4,6 +4,8 @@ import React from "react";
 import Image from "next/image";
 import CategoryList from "./CategoryList";
 import { useSession } from "next-auth/react";
+import { updateOpen } from "@/share/atom";
+import { useSetRecoilState } from "recoil";
 
 interface ReviewItemData {
   categories: any;
@@ -32,9 +34,12 @@ const ReviewItem = ({
   review: ReviewItemData;
   onDelete: any;
 }) => {
-  const { data: session, status }: any = useSession({
+  const { data: session }: any = useSession({
     required: true,
   });
+
+  const setUpdate = useSetRecoilState(updateOpen);
+
   return (
     <div key={review.id} className="p-4 border-b-[#E4E4E4] border-b-[0.4px]">
       <div className="flex justify-between mb-6">
@@ -71,7 +76,7 @@ const ReviewItem = ({
         {review.userId == session.user.id && (
           <div className="flex gap-3">
             <button onClick={() => onDelete(review.id)}>삭제</button>
-            <button>수정</button>
+            <button onClick={() => setUpdate(review)}>수정</button>
           </div>
         )}
       </div>

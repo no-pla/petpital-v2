@@ -3,10 +3,10 @@
 import React from "react";
 import ReviewItem from "./reviewForm/ReviewItem";
 import { reviewOpen } from "@/share/atom";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 
 const ReviewList = ({ reviews, onDelete }: any) => {
-  const [review, setReview] = useRecoilState(reviewOpen);
+  const setReview = useSetRecoilState(reviewOpen);
 
   return (
     <div className="h-[calc(100%-460px)] relative">

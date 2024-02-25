@@ -5,15 +5,17 @@ import HospitalInfo from "./HospitalInfo";
 import ReviewList from "./ReviewList";
 import { useSearchParams } from "next/navigation";
 import { useRecoilValue } from "recoil";
-import { reviewOpen } from "@/share/atom";
+import { reviewOpen, updateOpen } from "@/share/atom";
 import { useSession } from "next-auth/react";
 import ReviewForm from "./reviewForm/ReviewForm";
+import UpdateForm from "./updateForm/UpdateForm";
 
 const ReviewBoard = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const [data, setData] = useState<any>(null);
   const review = useRecoilValue(reviewOpen);
+  const update = useRecoilValue(updateOpen);
 
   const { data: session, status }: any = useSession({
     required: true,
@@ -43,13 +45,14 @@ const ReviewBoard = () => {
 
   useEffect(() => {
     getReviews();
-  }, [id, review]);
+  }, [id, review, update]);
 
   return (
     <div className="mt-[-52px] h-screen">
       <HospitalInfo reviews={data} />
       <ReviewList reviews={data} onDelete={onDelete} />
       {review && <ReviewForm />}
+      {update && <UpdateForm />}
     </div>
   );
 };

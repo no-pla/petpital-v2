@@ -35,6 +35,11 @@ export const reviewOpen = atom<boolean>({
   default: false,
 });
 
+export const updateOpen = atom<any>({
+  key: "updateOpen",
+  default: null,
+});
+
 export const selectedReview = atom<any>({
   key: "selectedReview",
   default: {},
