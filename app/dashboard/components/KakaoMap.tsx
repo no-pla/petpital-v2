@@ -7,7 +7,7 @@ import {
 } from "@/share/atom";
 import React, { useEffect, useState } from "react";
 import { Map, MapMarker } from "react-kakao-maps-sdk";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue, useResetRecoilState, useSetRecoilState } from "recoil";
 import { useSearchParams } from "next/navigation";
 
 const KakaoMap = () => {
@@ -23,6 +23,7 @@ const KakaoMap = () => {
   const [mapType, setMapType] = useState<"roadmap" | "skyview">("roadmap");
   const hospital = useRecoilValue(searchHospitalWord);
   const setHospitalArray = useSetRecoilState(hospitalDataArray);
+  const resetPagination = useResetRecoilState(pagination);
   const setPagination = useSetRecoilState(pagination);
 
   const searchParams = useSearchParams();
@@ -89,7 +90,6 @@ const KakaoMap = () => {
     ps.keywordSearch(
       hospitalName,
       (data, status, pagination) => {
-        console.log(status);
         if (status === kakao.maps.services.Status.ZERO_RESULT) {
           // TODO: 검색 결과 없을 때 처리
         }
@@ -119,6 +119,7 @@ const KakaoMap = () => {
           // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
           map.setBounds(bounds);
         }
+        resetPagination();
         if (pagination.first !== pagination.last && pagination.last > 1) {
           setPagination(pagination);
         }

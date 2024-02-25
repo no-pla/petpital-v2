@@ -4,7 +4,7 @@ import React, { useRef } from "react";
 import { useSetRecoilState } from "recoil";
 import { searchHospitalWord } from "@/share/atom";
 
-const SearchInput = () => {
+const SmallSearchInput = ({ openFunc }: { openFunc: () => void }) => {
   const searchRef = useRef<HTMLInputElement>(null);
   const setHospitalSearch = useSetRecoilState(searchHospitalWord);
 
@@ -16,11 +16,16 @@ const SearchInput = () => {
 
   return (
     <div className="bg-[#15B5BF] relative flex py-2 gap-1">
-      <div className="h-10 w-10 px-1 flex justify-center items-center">🤎</div>
+      <button
+        onClick={openFunc}
+        className="h-10 w-10 px-1 flex justify-center items-center"
+      >
+        🤎
+      </button>
       <form onSubmit={(event) => onSubmit(event)} className="w-full h-max pr-6">
         <input
           ref={searchRef}
-          className="py-2 px-2 w-full rounded-[2px] border-[#000] border-[0.4px] outline-none text-[14px] font-bold"
+          className="py-2 px-2 w-full rounded-[2px] border-[#000] border-[0.4px] outline-none text-[14px] font-bold w-[304px]"
           placeholder="동물병원을 입력해 보세요."
         />
       </form>
@@ -28,4 +33,4 @@ const SearchInput = () => {
   );
 };
 
-export default SearchInput;
+export default SmallSearchInput;
