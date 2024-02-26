@@ -24,19 +24,30 @@ const UserProfile = () => {
   }, [status]);
 
   return (
-    <div>
-      <button onClick={() => signOut()}>signOut</button>
+    <div className="bg-main w-full h-max">
+      <div className="font-semibold text-[#fff] text-center py-[30px]">
+        마이페이지
+      </div>
       {session && (
-        <>
+        <div className="flex flex-col items-center">
           <Image
             src={session.user?.image!}
             alt="프로필 이미지입니다."
-            width={150}
-            height={150}
+            width={128}
+            height={128}
+            className="rounded-full h-[128px] w-[128px] object-cover mb-4 border-white border-2"
           />
-          <div>{session.user?.name}</div>
-          <div>남긴 리뷰: {reviewList ? reviewList.length! : 0}</div>
-        </>
+          <div className="p-2 text-white text-[20px] font-bold">
+            {session.user?.name}
+          </div>
+          <div className="mt-5 py-2 px-3 bg-[rgba(255,255,255,0.3)] rounded text-white font-semibold">
+            <span className="mr-5">남긴 리뷰:</span>
+            <span>{reviewList ? reviewList.length! : 0}</span>
+          </div>
+          <span className="mt-[72px] border-b-white border-b-[4px] py-2 px-3  text-white font-medium">
+            리뷰
+          </span>
+        </div>
       )}
     </div>
   );

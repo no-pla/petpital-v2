@@ -23,9 +23,9 @@ const UserReviewList = () => {
   }, [status]);
 
   return (
-    <div>
+    <div className="mb-10">
       {reviewList ? (
-        <div>
+        <div className="flex flex-col items-center justify-center gap-6 mt-[84px]">
           {reviewList.map((review) => {
             return <Review key={review.id} review={review} />;
           })}
