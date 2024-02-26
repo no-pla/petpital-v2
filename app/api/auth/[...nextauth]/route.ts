@@ -46,7 +46,12 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    async jwt({ token, user, session, account }) {
+    async jwt({ token, user, trigger, session }) {
+      // 프로필 업데이트 시
+      if (trigger === "update" && (session.name || session.image)) {
+        token.name = session.name;
+        token.picture = session.image;
+      }
       // 로그인 하면서 토큰의 user에 id 추가
       if (user) {
         return {
@@ -54,6 +59,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
         };
       }
+
       return token;
     },
     async session({ session, token, user }) {

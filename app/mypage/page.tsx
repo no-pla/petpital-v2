@@ -2,7 +2,6 @@ import { getServerSession } from "next-auth";
 import React, { useState } from "react";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
-import { useSession } from "next-auth/react";
 import UserProfile from "./components/UserProfile";
 import UserReviewList from "./components/UserReviewList";
 

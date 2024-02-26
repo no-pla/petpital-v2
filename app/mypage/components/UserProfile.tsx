@@ -2,6 +2,7 @@
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
+import { signOut } from "next-auth/react";
 
 const UserProfile = () => {
   const [reviewList, setReviewList] = useState<null | any[]>(null);
@@ -24,6 +25,7 @@ const UserProfile = () => {
 
   return (
     <div>
+      <button onClick={() => signOut()}>signOut</button>
       {session && (
         <>
           <Image
