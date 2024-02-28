@@ -3,9 +3,11 @@
 import React, { useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import PhotoUploader from "@/app/dashboard/components/review/reviewForm/PhotoUploader";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { storageService } from "@/firebase/firebase";
+import UserProfilePhoto from "./UserProfilePhoto";
+import { LuArrowLeftCircle } from "react-icons/lu";
+import Link from "next/link";
 
 const UpdateForm = () => {
   const { data: session, status, update }: any = useSession();
@@ -16,7 +18,7 @@ const UpdateForm = () => {
     event.preventDefault();
     if (!session) return;
 
-    const reviewImage = localStorage.getItem("preview-image");
+    const reviewImage = localStorage.getItem("new-profile-image");
     const imgRef = ref(storageService, `${session.user.id}/${Date.now()}`);
     let downloadUrl;
     if (reviewImage) {
@@ -33,7 +35,6 @@ const UpdateForm = () => {
       }),
     });
     if (res.ok) {
-      console.log(downloadUrl);
       await update({ name: newNameRef.current?.value, image: downloadUrl });
     }
     router.push("/mypage");
@@ -43,10 +44,19 @@ const UpdateForm = () => {
     <div>
       {status === "authenticated" && (
         <>
-          <PhotoUploader image={session.user?.image!} />
-          <form onSubmit={updateProfile}>
-            <input defaultValue={session.user?.name!} ref={newNameRef} />
-            <button>업데이트</button>
+          <UserProfilePhoto image={session.user?.image!} />
+          <form
+            onSubmit={updateProfile}
+            className="mt-[128px] w-[540px] mx-auto"
+          >
+            <input
+              defaultValue={session.user?.name!}
+              ref={newNameRef}
+              className="w-full py-4 pl-5 border-[#E4E4E4] border-[1px]"
+            />
+            <button className="mt-[180px] w-full py-3 text-white bg-main rounded-sm border-[#AFE5E9] border-[1px]">
+              저장하기
+            </button>
           </form>
         </>
       )}
