@@ -4,6 +4,10 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 
+export const metadata = {
+  title: "회원가입",
+};
+
 const Page = async () => {
   await getServerSession(authOptions).then((res) => {
     if (res) {
