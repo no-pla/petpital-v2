@@ -31,16 +31,22 @@ const UserReviewList = () => {
           })}
         </div>
       ) : (
-        <div>작성한 리뷰가 존재하지 않습니다.</div>
+        <div className="text-center mt-8 flex flex-col items-center">
+          <button className="w-[466px] py-2 bg-main rounded text-white mb-8">
+            병원 검색하러 가기
+          </button>
+          <div className="shadow-noReview w-fit bg-white p-4 rounded-full">
+            아직 등록하신 리뷰가 없습니다!🐶
+          </div>
+          <p className="my-[60px] text-[14px]">
+            동물병원을 검색하고,
+            <br />
+            리뷰를 남겨보세요!
+          </p>
+        </div>
       )}
     </div>
   );
 };
 
 export default UserReviewList;
-
-/**TODO:
- * 1. 병원 이름 주소 담기
- * 2. 스키마 수정
- * 3. 마이 페이지 스타일
- */
