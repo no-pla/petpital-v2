@@ -9,9 +9,11 @@ import DashBoardHeader from "./DashBoardHeader";
 import { useRecoilState } from "recoil";
 import { dashboard as dashboardAtom } from "@/share/atom";
 import SmallSearchInput from "./search/SmallSearchInput";
+import { useRouter } from "next/navigation";
 
 const DashBoardContainer = () => {
   const [dashboard, setDashboard] = useRecoilState(dashboardAtom);
+  const router = useRouter();
 
   const openFirstDashboard = () => {
     setDashboard(() => {
@@ -35,7 +37,10 @@ const DashBoardContainer = () => {
     <div className="flex fixed top-0 left-0 h-full z-20">
       {dashboard?.first ? (
         <DashBoard>
-          <DashBoardHeader closeFunc={closeFirstDashboard} />
+          <DashBoardHeader
+            backFunc={() => router.push("/")}
+            closeFunc={closeFirstDashboard}
+          />
           <SearchInput />
           <SearchBoard />
         </DashBoard>

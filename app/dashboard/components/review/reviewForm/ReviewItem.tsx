@@ -2,10 +2,10 @@
 
 import React from "react";
 import Image from "next/image";
-import CategoryList from "./CategoryList";
 import { useSession } from "next-auth/react";
 import { updateOpen } from "@/share/atom";
 import { useSetRecoilState } from "recoil";
+import CategoryList from "./CategoryList";
 
 interface ReviewItemData {
   categories: any;

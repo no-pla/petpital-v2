@@ -6,8 +6,6 @@ import { useRouter } from "next/navigation";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { storageService } from "@/firebase/firebase";
 import UserProfilePhoto from "./UserProfilePhoto";
-import { LuArrowLeftCircle } from "react-icons/lu";
-import Link from "next/link";
 
 const UpdateForm = () => {
   const { data: session, status, update }: any = useSession();
