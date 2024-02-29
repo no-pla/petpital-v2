@@ -22,10 +22,16 @@ const PhotoUploader = ({ image }: { image?: string }) => {
   };
 
   useEffect(() => {
+    localStorage.removeItem("preview-image");
     if (image) {
       setPhoto(image);
     }
   }, []);
+
+  const onClickNewPhoto = () => {
+    setPhoto(null);
+    localStorage.removeItem("preview-image");
+  };
 
   return (
     <div className="px-3 mb-10">
@@ -58,7 +64,7 @@ const PhotoUploader = ({ image }: { image?: string }) => {
             } ${
               photo ? "bg-[#fafafa]" : "bg-[#15B5BF]"
             } m-2 flex justify-center items-center rounded-sm`}
-            onClick={() => setPhoto(null)}
+            onClick={onClickNewPhoto}
           >
             <IoCloseOutline />
           </button>

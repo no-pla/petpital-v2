@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
@@ -37,6 +37,10 @@ const UpdateForm = () => {
     }
     router.push("/mypage");
   };
+
+  useEffect(() => {
+    localStorage.removeItem("new-profile-image");
+  }, []);
 
   return (
     <div>

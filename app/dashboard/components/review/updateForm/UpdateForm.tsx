@@ -22,6 +22,7 @@ const UpdateForm = () => {
   const handleRating = (rate: number) => {
     setRating(rate);
   };
+
   const searchParams = useSearchParams();
   const lat = searchParams.get("lat");
   const lng = searchParams.get("lng");
@@ -71,7 +72,8 @@ const UpdateForm = () => {
   };
 
   useEffect(() => {
-    if (update?.rating) {
+    localStorage.removeItem("preview-image");
+    if (update?.rate) {
       setRating(update.rating);
     }
   }, []);
