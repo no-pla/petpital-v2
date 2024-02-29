@@ -14,7 +14,14 @@ import Image from "next/image";
 
 const KakaoMap = () => {
   const { data: session, status }: any = useSession();
-  const [state, setState] = useState<any>({
+  const [state, setState] = useState<{
+    center: {
+      lat: number;
+      lng: number;
+    };
+    errMsg: string | null;
+    isLoading: boolean;
+  }>({
     center: {
       lat: 33.450701,
       lng: 126.570667,
@@ -23,7 +30,14 @@ const KakaoMap = () => {
     isLoading: true,
   });
 
-  const [currentLoc, setCurrentLoc] = useState({
+  const [currentLoc, setCurrentLoc] = useState<{
+    center: {
+      lat: number;
+      lng: number;
+    };
+    errMsg: string | null;
+    isLoading: boolean;
+  }>({
     center: {
       lat: 33.450701,
       lng: 126.570667,
@@ -59,11 +73,22 @@ const KakaoMap = () => {
         isLoading: false,
       }));
     }
-    // 지도 띄울 때 현재 위치로 고정
+  }, []);
+
+  useEffect(() => {
+    // 유저 위치
     if (navigator.geolocation) {
       // GeoLocation을 이용해서 접속 위치를 얻어옵니다
       navigator.geolocation.getCurrentPosition(
         (position) => {
+          setState((prev: any) => ({
+            ...prev,
+            center: {
+              lat: position.coords.latitude, // 위도
+              lng: position.coords.longitude, // 경도
+            },
+            isLoading: false,
+          }));
           setCurrentLoc((prev: any) => ({
             ...prev,
             center: {
@@ -92,6 +117,7 @@ const KakaoMap = () => {
   }, []);
 
   useEffect(() => {
+    // 검색
     if (!map) return;
     const ps = new kakao.maps.services.Places();
 
@@ -142,95 +168,85 @@ const KakaoMap = () => {
 
   return (
     <>
-      {!state.isLoading && (
-        <>
-          <div className="z-10 absolute right-2 top-2 bg-white rounded p-[2px] flex">
-            <div
-              id="btnRoadmap"
-              className={`rounded-[2px] cursor-pointer p-2 ${
-                mapType === "roadmap" ? "bg-white" : "bg-[#15B5BF]"
-              } ${mapType === "roadmap" ? "text-black" : "text-white"}
+      <div className="z-10 absolute right-2 top-2 bg-white rounded p-[2px] flex">
+        <div
+          id="btnRoadmap"
+          className={`rounded-[2px] cursor-pointer p-2 ${
+            mapType === "roadmap" ? "bg-white" : "bg-[#15B5BF]"
+          } ${mapType === "roadmap" ? "text-black" : "text-white"}
           `}
-              onClick={() => setMapType("roadmap")}
-            >
-              지도
-            </div>
-            <div
-              id="btnSkyview"
-              className={`rounded-[2px] cursor-pointer p-2 box-content ${
-                mapType === "skyview" ? "bg-white" : "bg-[#15B5BF]"
-              } ${mapType === "skyview" ? "text-black" : "text-white"}`}
-              onClick={() => {
-                setMapType("skyview");
-              }}
-            >
-              스카이뷰
-            </div>
-          </div>
-          <Map
-            id="map"
-            center={state.center}
-            style={{ width: "100vw", height: "100vh" }}
-            mapTypeId={mapType === "roadmap" ? "ROADMAP" : "HYBRID"}
-            onCreate={setMap}
-          >
-            {/* <MapMarker
-              position={currentLoc?.center}
-              title="제목"
-              image={{
-                src: session?.user.image,
-                options: {
-                  shape: "circle",
-                  spriteSize: {
-                    width: 56,
-                    height: 56,
-                  },
-                },
-                size: {
-                  width: 56,
-                  height: 56,
-                },
-              }}
-            /> */}
-            {markers.map((marker: any) => (
-              <MapMarker // 마커를 생성합니다
+          onClick={() => setMapType("roadmap")}
+        >
+          지도
+        </div>
+        <div
+          id="btnSkyview"
+          className={`rounded-[2px] cursor-pointer p-2 box-content ${
+            mapType === "skyview" ? "bg-white" : "bg-[#15B5BF]"
+          } ${mapType === "skyview" ? "text-black" : "text-white"}`}
+          onClick={() => {
+            setMapType("skyview");
+          }}
+        >
+          스카이뷰
+        </div>
+      </div>
+      {!state?.isLoading && (
+        <Map
+          id="map"
+          center={state.center}
+          style={{ width: "100vw", height: "100vh" }}
+          mapTypeId={mapType === "roadmap" ? "ROADMAP" : "HYBRID"}
+          onCreate={setMap}
+        >
+          {markers.map((marker: any, index: number) => {
+            return (
+              <CustomOverlayMap // 커스텀 오버레이를 표시할 Container
+                // 커스텀 오버레이가 표시될 위치입니다
                 key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
-                position={marker.position}
-                onClick={() => setInfo(marker)}
-                image={{
-                  src: "https://firebasestorage.googleapis.com/v0/b/petpital-v2.appspot.com/o/assets%2Fslected.png?alt=media&token=5d0527cd-e621-4a91-b05c-5dbbe635d51a",
-                  size: {
-                    width: 54,
-                    height: 54,
-                  }, // 마커이미지의 크기입니다
-                  options: {
-                    offset: {
-                      x: 27,
-                      y: 69,
-                    }, // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
-                  },
+                position={{
+                  lat: marker.position.lat,
+                  lng: marker.position.lng,
                 }}
+              >
+                <div className="">
+                  <div className="mb-1 bg-main w-fit p-2 font-bold text-white rounded border-[#249793] border-[1px] transform -translate-x-1/4">
+                    {marker.content}
+                  </div>
+                  <div className="relative">
+                    <Image
+                      src="https://firebasestorage.googleapis.com/v0/b/petpital-v2.appspot.com/o/assets%2Fslected2.png?alt=media&token=49080b1c-06c3-45de-9975-b398e2c5774f"
+                      alt=""
+                      width={56}
+                      height={56}
+                      className="object-cover w-14 h-14 rounded-full "
+                    />
+                    <span className="absolute top-[5px] left-[14px] w-7 flex justify-center items-center bg-white rounded-full text-[20px] text-main font-bold">
+                      {String.fromCharCode(65 + index)}
+                    </span>
+                  </div>
+                </div>
+              </CustomOverlayMap>
+            );
+          })}
+          <CustomOverlayMap // 커스텀 오버레이를 표시할 Container
+            // 커스텀 오버레이가 표시될 위치입니다
+            position={{
+              lat: currentLoc.center.lat,
+              lng: currentLoc.center.lng,
+            }}
+          >
+            <div className="border-[3px] border-main rounded-full w-14 h-14">
+              <Image
+                src={session?.user.image}
+                alt=""
+                width={56}
+                height={56}
+                className="object-cover w-full h-full rounded-full"
               />
-            ))}
-            <CustomOverlayMap // 커스텀 오버레이를 표시할 Container
-              // 커스텀 오버레이가 표시될 위치입니다
-              position={{
-                lat: currentLoc.center.lat,
-                lng: currentLoc.center.lng,
-              }}
-            >
-              <div className="border-[3px] border-main rounded-full w-14 h-14">
-                <Image
-                  src={session?.user.image}
-                  alt=""
-                  width={56}
-                  height={56}
-                  className="object-cover w-full h-full rounded-full"
-                />
-              </div>
-            </CustomOverlayMap>
-          </Map>
-        </>
+            </div>
+          </CustomOverlayMap>
+        </Map>
       )}
     </>
   );
