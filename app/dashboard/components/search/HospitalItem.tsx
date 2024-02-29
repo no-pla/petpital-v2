@@ -3,6 +3,7 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import { useRouter } from "next/navigation";
 import { selectedHospital } from "@/share/atom";
 import { dashboard as dashboardAtom } from "@/share/atom";
+import ReviewPreview from "./ReviewPreview";
 
 const HospitalItem = ({ hospital, index }: any) => {
   const router = useRouter();
@@ -25,7 +26,7 @@ const HospitalItem = ({ hospital, index }: any) => {
       const res = await fetch(`/api/hospital?hospitalId=${hospital.id}`, {
         method: "GET",
       });
-      const reviews = await res.json();
+      const reviews = await res?.json();
       setHospitalReviews(reviews);
     };
     searchHospitalReview();
@@ -58,6 +59,9 @@ const HospitalItem = ({ hospital, index }: any) => {
           방문자 리뷰: {hospitalReview?.length || 0}
         </div>
       </div>
+      {hospitalReview?.length! > 0 && (
+        <ReviewPreview hospitalReview={hospitalReview?.slice(-4)} />
+      )}
     </div>
   );
 };
