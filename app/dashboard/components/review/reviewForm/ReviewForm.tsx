@@ -67,6 +67,8 @@ const ReviewForm = () => {
           rate: rating,
           totalAmounts: +data.totalAmounts,
           createdAt: new Date().toLocaleDateString("ko-KR"),
+          hospitalName: hospitalData.place_name,
+          hospitalAddress: hospitalData.address_name,
         }),
         method: "POST",
       });
