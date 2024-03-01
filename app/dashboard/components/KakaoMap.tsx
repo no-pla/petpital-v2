@@ -77,6 +77,7 @@ const KakaoMap = () => {
 
   useEffect(() => {
     // 유저 위치
+    if (lat && lng) return;
     if (navigator.geolocation) {
       // GeoLocation을 이용해서 접속 위치를 얻어옵니다
       navigator.geolocation.getCurrentPosition(
@@ -204,27 +205,22 @@ const KakaoMap = () => {
               <CustomOverlayMap // 커스텀 오버레이를 표시할 Container
                 // 커스텀 오버레이가 표시될 위치입니다
                 key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
-                position={{
-                  lat: marker.position.lat,
-                  lng: marker.position.lng,
-                }}
+                position={marker.position}
               >
-                <div className="">
-                  <div className="mb-1 bg-main w-fit p-2 font-bold text-white rounded border-[#249793] border-[1px] transform -translate-x-1/4">
+                <div className="relative w-max">
+                  <span className="absolute -top-10 bg-main py-1 px-2 font-bold text-white rounded border-[#249793] border-[1px] transform -translate-x-1/4">
                     {marker.content}
-                  </div>
-                  <div className="relative">
-                    <Image
-                      src="https://firebasestorage.googleapis.com/v0/b/petpital-v2.appspot.com/o/assets%2Fslected2.png?alt=media&token=49080b1c-06c3-45de-9975-b398e2c5774f"
-                      alt=""
-                      width={56}
-                      height={56}
-                      className="object-cover w-14 h-14 rounded-full "
-                    />
-                    <span className="absolute top-[5px] left-[14px] w-7 flex justify-center items-center bg-white rounded-full text-[20px] text-main font-bold">
-                      {String.fromCharCode(65 + index)}
-                    </span>
-                  </div>
+                  </span>
+                  <Image
+                    src="https://firebasestorage.googleapis.com/v0/b/petpital-v2.appspot.com/o/assets%2Fslected2.png?alt=media&token=49080b1c-06c3-45de-9975-b398e2c5774f"
+                    alt=""
+                    width={56}
+                    height={56}
+                    className="object-cover w-14 h-14 rounded-full"
+                  />
+                  <span className="absolute top-[32px] left-[14px] w-7 flex justify-center items-center bg-white rounded-full text-[20px] text-main font-bold transform -translate-y-7">
+                    {String.fromCharCode(65 + index)}
+                  </span>
                 </div>
               </CustomOverlayMap>
             );
@@ -238,7 +234,10 @@ const KakaoMap = () => {
           >
             <div className="border-[3px] border-main rounded-full w-14 h-14">
               <Image
-                src={session?.user.image}
+                src={
+                  session?.user.image ||
+                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                }
                 alt=""
                 width={56}
                 height={56}

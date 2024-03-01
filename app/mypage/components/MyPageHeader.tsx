@@ -4,7 +4,7 @@ import { LuArrowLeftCircle } from "react-icons/lu";
 
 const MyPageHeader = ({ title }: { title: string }) => {
   return (
-    <div className="flex justify-center items-center pb-[30px] relative w-[1200px] mx-auto">
+    <div className="flex justify-center items-center pb-[30px] relative max-w-[1200px] mx-auto">
       {title !== "마이페이지" && (
         <Link
           href="/mypage"

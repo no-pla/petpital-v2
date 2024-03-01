@@ -1,9 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import Review from "./Review";
 
 const UserReviewList = () => {
+  const router = useRouter();
   const [reviewList, setReviewList] = useState<null | any[]>(null);
 
   const { data: session, status }: any = useSession({
@@ -24,7 +26,7 @@ const UserReviewList = () => {
 
   return (
     <div className="mb-10">
-      {reviewList ? (
+      {reviewList?.length ? (
         <div className="flex flex-col items-center justify-center gap-6 mt-[84px]">
           {reviewList.map((review) => {
             return <Review key={review.id} review={review} />;
@@ -32,7 +34,10 @@ const UserReviewList = () => {
         </div>
       ) : (
         <div className="text-center mt-8 flex flex-col items-center">
-          <button className="w-[466px] py-2 bg-main rounded text-white mb-8">
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="w-[466px] py-2 bg-main rounded text-white mb-8"
+          >
             병원 검색하러 가기
           </button>
           <div className="shadow-noReview w-fit bg-white p-4 rounded-full">
