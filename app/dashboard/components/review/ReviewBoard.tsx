@@ -47,9 +47,36 @@ const ReviewBoard = () => {
     getReviews();
   }, [id, review, update]);
 
+  const onChangeOrderNew = () => {
+    setData((prev: any) =>
+      [...prev].sort((data1, data2) => {
+        return +data2.createdAt - +data1.createdAt;
+      })
+    );
+  };
+
+  const onChangeOrder = () => {
+    setData((prev: any) =>
+      [...prev].sort((data1, data2) => {
+        return +data1.createdAt - +data2.createdAt;
+      })
+    );
+  };
+
   return (
     <div className="mt-[-52px] h-screen">
       <HospitalInfo reviews={data} />
+      <div className="flex gap-3 p-1 border-[#E4E4E4] border-b-[0.4px]">
+        <button
+          className="p-2 font-medium text-[#15B5BF]"
+          onClick={onChangeOrder}
+        >
+          영수증 리뷰
+        </button>
+        <button className="p-2 font-medium" onClick={onChangeOrderNew}>
+          최신순
+        </button>
+      </div>
       <ReviewList reviews={data} onDelete={onDelete} />
       {review && <ReviewForm />}
       {update && <UpdateForm />}

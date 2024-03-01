@@ -32,10 +32,6 @@ const HospitalInfo = ({ reviews }: any) => {
           방문자 리뷰 {reviews?.length || 0}
         </div>
       </div>
-      <div className="flex gap-3 p-1 border-[#E4E4E4] border-b-[0.4px]">
-        <button className="p-2 font-medium text-[#15B5BF]">영수증 리뷰</button>
-        <button className="p-2 font-medium">최신순</button>
-      </div>
     </div>
   );
 };
