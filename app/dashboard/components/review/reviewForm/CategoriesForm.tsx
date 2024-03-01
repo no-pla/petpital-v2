@@ -4,6 +4,7 @@ import { reviewCategories } from "@/share/atom";
 import React, { useEffect, useRef } from "react";
 import { useRecoilState } from "recoil";
 import { v4 as uuidv4 } from "uuid";
+import { IoCloseOutline } from "react-icons/io5";
 
 const CategoriesForm = ({ defaultCategories }: any) => {
   const [categories, setCategories] = useRecoilState(reviewCategories);
@@ -55,14 +56,14 @@ const CategoriesForm = ({ defaultCategories }: any) => {
           return (
             <div
               key={category.id}
-              className=" border-[#15B5BF] border-[2px] p-1 rounded text-[14px]"
+              className=" border-[#15B5BF] border-[2px] p-1 rounded text-[14px] flex items-center"
             >
               <span className="text-[#15B5BF]"> {category.keyword}</span>
               <button
                 onClick={() => onDeleteCategory(category.id)}
-                className="bg-[#15B5BF] text-white w-5 h-5 text-[14px] rounded-full ml-1"
+                className="bg-[#15B5BF] text-white text-[14px] rounded-full ml-1"
               >
-                X
+                <IoCloseOutline size={16} />
               </button>
             </div>
           );

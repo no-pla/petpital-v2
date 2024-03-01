@@ -66,7 +66,9 @@ const ReviewForm = () => {
           categories,
           rate: rating,
           totalAmounts: +data.totalAmounts,
-          createdAt: new Date().toLocaleDateString("ko-KR"),
+          createdAt: Date.now().toString(),
+          hospitalName: hospitalData.place_name,
+          hospitalAddress: hospitalData.address_name,
         }),
         method: "POST",
       });
@@ -175,10 +177,3 @@ const ReviewForm = () => {
 };
 
 export default ReviewForm;
-
-/** TODO: 할 일
- * 1. 핀 클릭 시 해당 병원 데이터 띄우기 - 완료
- * 2. 유저 현재 위치 (로그인시/로그아웃시 다르게 띄우기)
- * 3. 유저 버튼 클릭 시 현재 위치 다시 띄우기
- * 4. 리뷰 CRUD
- */

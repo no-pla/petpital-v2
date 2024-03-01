@@ -6,7 +6,7 @@ const CategoryList = ({ categories }: any) => {
       {categories.map((category: { id: string; keyword: string }) => {
         return (
           <div
-            key={category.keyword}
+            key={category.id}
             className="border border-[#15b5bf] rounded px-2 py-1 text-[12px] text-[#15b5bf]"
           >
             {category.keyword}

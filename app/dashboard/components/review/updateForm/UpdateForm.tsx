@@ -1,10 +1,12 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import PhotoUploader from "../reviewForm/PhotoUploader";
 import ReviewInput from "../reviewForm/ReviewInput";
 import { Rating } from "react-simple-star-rating";
 import { FormProvider, useForm } from "react-hook-form";
 import CategoriesForm from "../reviewForm/CategoriesForm";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { reviewCategories, updateOpen } from "@/share/atom";
 import SelectedHospitalMap from "../SelectedHospitalMap";
 import { useSearchParams } from "next/navigation";
@@ -20,6 +22,7 @@ const UpdateForm = () => {
   const handleRating = (rate: number) => {
     setRating(rate);
   };
+
   const searchParams = useSearchParams();
   const lat = searchParams.get("lat");
   const lng = searchParams.get("lng");
@@ -69,15 +72,15 @@ const UpdateForm = () => {
   };
 
   useEffect(() => {
-    if (update?.rating) {
+    localStorage.removeItem("preview-image");
+    if (update?.rate) {
       setRating(update.rating);
     }
   }, []);
 
   return (
     <div className="fixed top-0 left-[375px] bg-white w-[375px] h-full overflow-scroll scrollbar-hide z-20">
-      <div className="p-4 w-full text-black text-[12px] font-bold flex justify-between border-b-[#E4E4E4] border-b-[0.4px]">
-        <button>리뷰</button>
+      <div className="p-4 w-full text-black text-[12px] font-bold flex justify-end border-b-[#E4E4E4] border-b-[0.4px]">
         <button onClick={() => setUpdate(null)}>닫기</button>
       </div>
       <PhotoUploader image={update.photo} />

@@ -6,12 +6,38 @@ import {
   searchHospitalWord,
 } from "@/share/atom";
 import React, { useEffect, useState } from "react";
-import { Map, MapMarker } from "react-kakao-maps-sdk";
+import { CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
 import { useRecoilValue, useResetRecoilState, useSetRecoilState } from "recoil";
 import { useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
 
 const KakaoMap = () => {
-  const [state, setState] = useState<any>({
+  const { data: session, status }: any = useSession();
+  const [state, setState] = useState<{
+    center: {
+      lat: number;
+      lng: number;
+    };
+    errMsg: string | null;
+    isLoading: boolean;
+  }>({
+    center: {
+      lat: 33.450701,
+      lng: 126.570667,
+    },
+    errMsg: null,
+    isLoading: true,
+  });
+
+  const [currentLoc, setCurrentLoc] = useState<{
+    center: {
+      lat: number;
+      lng: number;
+    };
+    errMsg: string | null;
+    isLoading: boolean;
+  }>({
     center: {
       lat: 33.450701,
       lng: 126.570667,
@@ -37,7 +63,6 @@ const KakaoMap = () => {
   const [map, setMap] = useState<any>();
 
   useEffect(() => {
-    // 지도 띄울 때 현재 위치로 고정
     if (lat && lng) {
       setState((prev: any) => ({
         ...prev,
@@ -47,43 +72,53 @@ const KakaoMap = () => {
         },
         isLoading: false,
       }));
-      return;
-    } else {
-      if (navigator.geolocation) {
-        // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            setState((prev: any) => ({
-              ...prev,
-              center: {
-                lat: position.coords.latitude, // 위도
-                lng: position.coords.longitude, // 경도
-              },
-              isLoading: false,
-            }));
-          },
-          (err) => {
-            setState((prev: any) => ({
-              ...prev,
-              errMsg: err.message,
-              isLoading: false,
-            }));
-          }
-        );
-      } else {
-        // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
-        setState((prev: any) => ({
-          ...prev,
-          errMsg: "geolocation을 사용할수 없어요..",
-          isLoading: false,
-        }));
-      }
     }
   }, []);
 
   useEffect(() => {
+    // 유저 위치
+    if (navigator.geolocation) {
+      // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setState((prev: any) => ({
+            ...prev,
+            center: {
+              lat: position.coords.latitude, // 위도
+              lng: position.coords.longitude, // 경도
+            },
+            isLoading: false,
+          }));
+          setCurrentLoc((prev: any) => ({
+            ...prev,
+            center: {
+              lat: position.coords.latitude, // 위도
+              lng: position.coords.longitude, // 경도
+            },
+            isLoading: false,
+          }));
+        },
+        (err) => {
+          setCurrentLoc((prev: any) => ({
+            ...prev,
+            errMsg: err.message,
+            isLoading: false,
+          }));
+        }
+      );
+    } else {
+      // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
+      setCurrentLoc((prev: any) => ({
+        ...prev,
+        errMsg: "geolocation을 사용할수 없어요..",
+        isLoading: false,
+      }));
+    }
+  }, []);
+
+  useEffect(() => {
+    // 검색
     if (!map) return;
-    // if (hospital === "" && name === "") return;
     const ps = new kakao.maps.services.Places();
 
     const hospitalName = !hospital ? `${loc} ${name}` : hospital + "동물병원";
@@ -156,21 +191,63 @@ const KakaoMap = () => {
           스카이뷰
         </div>
       </div>
-      <Map
-        id="map"
-        center={state.center}
-        style={{ width: "100vw", height: "100vh" }}
-        mapTypeId={mapType === "roadmap" ? "ROADMAP" : "HYBRID"}
-        onCreate={setMap}
-      >
-        {markers.map((marker: any) => (
-          <MapMarker
-            key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
-            position={marker.position}
-            onClick={() => setInfo(marker)}
-          ></MapMarker>
-        ))}
-      </Map>
+      {!state?.isLoading && (
+        <Map
+          id="map"
+          center={state.center}
+          style={{ width: "100vw", height: "100vh" }}
+          mapTypeId={mapType === "roadmap" ? "ROADMAP" : "HYBRID"}
+          onCreate={setMap}
+        >
+          {markers.map((marker: any, index: number) => {
+            return (
+              <CustomOverlayMap // 커스텀 오버레이를 표시할 Container
+                // 커스텀 오버레이가 표시될 위치입니다
+                key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
+                position={{
+                  lat: marker.position.lat,
+                  lng: marker.position.lng,
+                }}
+              >
+                <div className="">
+                  <div className="mb-1 bg-main w-fit p-2 font-bold text-white rounded border-[#249793] border-[1px] transform -translate-x-1/4">
+                    {marker.content}
+                  </div>
+                  <div className="relative">
+                    <Image
+                      src="https://firebasestorage.googleapis.com/v0/b/petpital-v2.appspot.com/o/assets%2Fslected2.png?alt=media&token=49080b1c-06c3-45de-9975-b398e2c5774f"
+                      alt=""
+                      width={56}
+                      height={56}
+                      className="object-cover w-14 h-14 rounded-full "
+                    />
+                    <span className="absolute top-[5px] left-[14px] w-7 flex justify-center items-center bg-white rounded-full text-[20px] text-main font-bold">
+                      {String.fromCharCode(65 + index)}
+                    </span>
+                  </div>
+                </div>
+              </CustomOverlayMap>
+            );
+          })}
+          <CustomOverlayMap // 커스텀 오버레이를 표시할 Container
+            // 커스텀 오버레이가 표시될 위치입니다
+            position={{
+              lat: currentLoc.center.lat,
+              lng: currentLoc.center.lng,
+            }}
+          >
+            <div className="border-[3px] border-main rounded-full w-14 h-14">
+              <Image
+                src={session?.user.image}
+                alt=""
+                width={56}
+                height={56}
+                className="object-cover w-full h-full rounded-full"
+              />
+            </div>
+          </CustomOverlayMap>
+        </Map>
+      )}
     </>
   );
 };

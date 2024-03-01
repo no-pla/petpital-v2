@@ -3,6 +3,7 @@
 import React, { useRef } from "react";
 import { useSetRecoilState } from "recoil";
 import { searchHospitalWord } from "@/share/atom";
+import Image from "next/image";
 
 const SearchInput = () => {
   const searchRef = useRef<HTMLInputElement>(null);
@@ -15,8 +16,16 @@ const SearchInput = () => {
   };
 
   return (
-    <div className="bg-[#15B5BF] relative flex py-2 gap-1">
-      <div className="h-10 w-10 px-1 flex justify-center items-center">🤎</div>
+    <div className="bg-[#15B5BF] relative flex py-2 pl-2 gap-1">
+      <div className="w-10 px-1 flex justify-center items-center">
+        <Image
+          src="/main_logo.png"
+          width={24}
+          height={36}
+          alt="펫피탈 로고"
+          className="w-6 h-9"
+        />
+      </div>
       <form onSubmit={(event) => onSubmit(event)} className="w-full h-max pr-6">
         <input
           ref={searchRef}

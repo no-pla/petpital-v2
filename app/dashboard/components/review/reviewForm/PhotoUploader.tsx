@@ -2,75 +2,76 @@
 
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
+import { IoCloseOutline } from "react-icons/io5";
+import { CiCirclePlus } from "react-icons/ci";
 
 const PhotoUploader = ({ image }: { image?: string }) => {
-  const [photoList, setPhotoList] = useState<any>(null);
+  const [photo, setPhoto] = useState<string | null>(null);
 
   const onChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const fileList = event.target?.files;
-    if (!fileList) return;
+    const newPhoto = event.target?.files;
+    if (!newPhoto || newPhoto.length === 0) return;
+    const reader: FileReader = new FileReader();
+    reader.readAsDataURL(newPhoto[0]);
 
-    const result: any = await imageToDataURL(fileList);
-    setPhotoList(result);
-    localStorage.setItem("preview-image", result);
-
-    event.target.value = "";
-  };
-
-  const imageToDataURL = async (fileList: any) => {
-    const readAndPreview = (file: any) => {
-      const reader = new FileReader();
-      return new Promise((resolve) => {
-        reader.onloadend = (event) => {
-          resolve(event.target!.result);
-        };
-        reader.readAsDataURL(file);
-      });
+    reader.onloadend = (event: any) => {
+      const result = event.currentTarget?.result;
+      setPhoto(result);
+      localStorage.setItem("preview-image", result);
     };
-
-    const promises = Array.from(fileList).map(readAndPreview);
-
-    return await Promise.all(promises);
   };
 
   useEffect(() => {
+    localStorage.removeItem("preview-image");
     if (image) {
-      setPhotoList([image]);
+      setPhoto(image);
     }
   }, []);
 
+  const onClickNewPhoto = () => {
+    setPhoto(null);
+    localStorage.removeItem("preview-image");
+  };
+
   return (
-    <div className="px-3 mt-8 mb-10">
-      <div className="font-bold text-[14px]">사진 인증</div>
-      <p className="text-[#c5c5c5] text-[10px] mt-1 mb-2">
-        영수증, 병원 등 다른 회원님들에게 도움 될 만한 이미지를 공유해 주세요.
-      </p>
-      <div className="relative h-[196px]">
+    <div className="px-3 mb-10">
+      <div className="mt-8">
+        <div className="font-bold text-[14px]">사진 인증</div>
+        <p className="text-[#c5c5c5] text-[10px] mt-1 mb-2">
+          영수증, 병원 등 다른 회원님들에게 도움 될 만한 이미지를 공유해 주세요.
+        </p>
+      </div>
+      <div className="relative h-[196px] w-full">
         <label
           htmlFor="reviewImage"
           className={`h-[196px] w-full ${
-            photoList ? "bg-transparent" : "bg-[#fafafa]"
+            photo ? "bg-transparent" : "bg-[#D9D9D9]"
           } w-full flex items-center justify-center absolute ${
-            photoList ? "text-white" : "text-black"
+            photo ? "text-white" : "text-black"
           } top-0`}
         >
-          {photoList ? "사진 바꾸기" : "사진 올리기"}
+          <div className="flex flex-col justify-center items-center gap-2 ">
+            <CiCirclePlus color="white" width={24} height={24} />
+            <span className="text-[12px] font-bold text-white">
+              {photo ? "사진 바꾸기" : "사진 올리기"}
+            </span>
+          </div>
         </label>
-        {photoList && (
+        {photo && (
           <button
             className={`absolute w-5 h-5 ${
-              photoList ? "text-black" : "text-[#fafafa]"
+              photo ? "text-black" : "text-[#fafafa]"
             } ${
-              photoList ? "bg-[#fafafa]" : "bg-[#15B5BF]"
+              photo ? "bg-[#fafafa]" : "bg-[#15B5BF]"
             } m-2 flex justify-center items-center rounded-sm`}
-            onClick={() => setPhotoList(null)}
+            onClick={onClickNewPhoto}
           >
-            X
+            <IoCloseOutline />
           </button>
         )}
-        {photoList && (
+        {photo && (
           <Image
-            src={photoList[0]}
+            src={photo}
             alt="리뷰 이미지"
             width={375}
             height={196}
@@ -83,7 +84,6 @@ const PhotoUploader = ({ image }: { image?: string }) => {
         accept="image/*"
         type="file"
         id="reviewImage"
-        // multiple TODO: MVP 만든 후 여러 이미지 받아오는 방식으로 수정
         onChange={(event) => onChange(event)}
         className="hidden"
       />

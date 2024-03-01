@@ -2,14 +2,14 @@
 
 import React from "react";
 import Image from "next/image";
-import CategoryList from "./CategoryList";
 import { useSession } from "next-auth/react";
 import { updateOpen } from "@/share/atom";
 import { useSetRecoilState } from "recoil";
+import CategoryList from "./CategoryList";
 
 interface ReviewItemData {
   categories: any;
-  createdAt: string;
+  createdAt: number;
   hospitalId: string;
   id: string;
   photo: string;
@@ -70,7 +70,7 @@ const ReviewItem = ({
       <CategoryList categories={review.categories} />
       <div className="text-[#9F9F9F] text-[12px] flex gap-3 justify-between">
         <div className="flex gap-3">
-          <p>{review.createdAt}</p>
+          <p>{new Date(Number(review.createdAt)).toLocaleDateString()}</p>
           <p>번째 방문</p>
         </div>
         {review.userId == session.user.id && (

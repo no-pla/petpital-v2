@@ -14,6 +14,8 @@ export async function POST(req) {
     userId,
     categories,
     createdAt,
+    hospitalName,
+    hospitalAddress,
   } = await req.json();
 
   if (!userId) {
@@ -48,12 +50,14 @@ export async function POST(req) {
         rate,
         photo:
           photo === ""
-            ? "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-            : photo, // TODO: 비어 있는 경우 이미지 임시 추가
+            ? "https://firebasestorage.googleapis.com/v0/b/petpital-v2.appspot.com/o/assets%2Fno_image_info%20(1).png?alt=media&token=f5a0cb7a-47c1-4ba9-b3f4-c87795cc21d4"
+            : photo,
         hospitalId,
         userId,
         categories,
         createdAt,
+        hospitalName,
+        hospitalAddress,
       },
     });
   } catch (error) {
@@ -151,7 +155,7 @@ export async function PATCH(req) {
       review,
       totalAmounts,
       rate,
-      photo,
+      ...(photo !== null && { photo }), // 이 줄이 추가된 부분입니다.
       userId,
       categories,
     },

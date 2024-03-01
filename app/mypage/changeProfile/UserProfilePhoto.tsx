@@ -21,10 +21,12 @@ const UserProfilePhoto = ({ image }: { image: string }) => {
   };
 
   useEffect(() => {
+    localStorage.removeItem("new-profile-image");
     if (image) {
       setPhoto(image);
     }
   }, []);
+
   return (
     <div className="mt-4 flex flex-col items-center">
       <div className="relative">
