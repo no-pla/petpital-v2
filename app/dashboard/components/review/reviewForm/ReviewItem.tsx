@@ -35,7 +35,7 @@ const ReviewItem = ({
   onDelete: any;
 }) => {
   const { data: session }: any = useSession({
-    required: true,
+    required: false,
   });
 
   const setUpdate = useSetRecoilState(updateOpen);
@@ -71,9 +71,8 @@ const ReviewItem = ({
       <div className="text-[#9F9F9F] text-[12px] flex gap-3 justify-between">
         <div className="flex gap-3">
           <p>{new Date(Number(review.createdAt)).toLocaleDateString()}</p>
-          <p>번째 방문</p>
         </div>
-        {review.userId == session.user.id && (
+        {review.userId == session?.user.id && (
           <div className="flex gap-3">
             <button onClick={() => onDelete(review.id)}>삭제</button>
             <button onClick={() => setUpdate(review)}>수정</button>

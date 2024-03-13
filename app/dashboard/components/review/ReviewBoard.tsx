@@ -18,7 +18,7 @@ const ReviewBoard = () => {
   const update = useRecoilValue(updateOpen);
 
   const { data: session, status }: any = useSession({
-    required: true,
+    required: false,
   });
 
   const getReviews = async () => {

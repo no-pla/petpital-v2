@@ -32,18 +32,39 @@ const ReviewPreview = ({ hospitalReview }: any) => {
         })}
       </div>
       <div className="flex gap-1">
-        {hospitalReview.slice(-2).map((review: any) => {
-          return (
-            <div key={review.id} className="mt-1 w-ful">
-              <div className="bg-gray-200 text-[12px] py-2 px-2 rounded-sm flex w-[328px] min-h-[52px]">
-                <span className="font-bold mr-1 min-w-fit h-fit">
-                  {review.user.name}
-                </span>
-                <span className="text-clip line-clamp-2">{review.review}</span>
+        {hospitalReview.length > 2 ? (
+          hospitalReview.slice(-2).map((review: any) => {
+            return (
+              <div key={review.id} className="mt-1 w-ful">
+                <div className="bg-gray-200 text-[12px] py-2 px-2 rounded-sm flex w-[328px] min-h-[52px]">
+                  <span className="font-bold mr-1 min-w-fit h-fit">
+                    {review.user.name}
+                  </span>
+                  <span className="text-clip line-clamp-2">
+                    {review.review}
+                  </span>
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })
+        ) : (
+          <>
+            {hospitalReview.slice(-1).map((review: any) => {
+              return (
+                <div key={review.id} className="mt-1 w-ful">
+                  <div className="bg-gray-200 text-[12px] py-2 px-2 rounded-sm flex w-[328px] min-h-[52px]">
+                    <span className="font-bold mr-1 min-w-fit h-fit">
+                      {review.user.name}
+                    </span>
+                    <span className="text-clip line-clamp-2">
+                      {review.review}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </>
+        )}
       </div>
     </div>
   );
