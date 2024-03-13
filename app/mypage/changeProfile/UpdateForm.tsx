@@ -43,7 +43,7 @@ const UpdateForm = () => {
   }, []);
 
   return (
-    <div>
+    <>
       {status === "authenticated" && (
         <>
           <UserProfilePhoto image={session.user?.image!} />
@@ -62,7 +62,7 @@ const UpdateForm = () => {
           </form>
         </>
       )}
-    </div>
+    </>
   );
 };
 

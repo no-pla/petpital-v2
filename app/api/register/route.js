@@ -36,7 +36,7 @@ export async function POST(req) {
       password: hashedPassword,
       name,
       image:
-        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png", //TODO: 임시 추가
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
     },
   });
 
