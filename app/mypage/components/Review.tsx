@@ -1,10 +1,19 @@
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const Review = ({ review }: any) => {
   console.log(review);
+  const router = useRouter();
   return (
-    <div className="flex w-[466px] h-[196px] bg-[#FAFAFA] rounded ">
+    <div
+      className="flex w-[466px] h-[196px] bg-[#FAFAFA] rounded"
+      onClick={() =>
+        router.replace(
+          `/dashboard?loc=${review.hospitalAddress}&name=${review.hospitalName}`
+        )
+      }
+    >
       <Image
         src={review.photo}
         alt=""
@@ -12,7 +21,7 @@ const Review = ({ review }: any) => {
         height={196}
         className="grow-1 object-cover rounded-l"
       />
-      <div className="grow-[2] px-2 py-3 flex flex-col justify-between">
+      <div className="grow-[2] px-3 py-2 flex flex-col justify-between">
         <div className="h-full">
           <div className="font-semibold text-[14px] mb-1">{review.title}</div>
           <div className="flex gap-3 text-[14px] justify-between items-center mb-1">
