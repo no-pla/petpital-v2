@@ -1,36 +1,21 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# PETPITAL-v2
 
-## Getting Started
+리팩토링
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+로그인/회원가입 페이지
+ㄴ Next-Auth/Prisma/MongoDB 활용 (네이버/카카오/매직링크 로그인)
+메인 페이지
+ㄴ 최근 달린 리뷰/Q&A/리뷰 많은 병원
+Q&A 페이지
+ㄴ AI 답변
+ㄴ 키워드/태그 검색
+ㄴ Q&A 공유
+리뷰 페이지
+ㄴ 키워드 검색
+ㄴ 도움이 됨/도움이 되지 않음 기능
+ㄴ 정렬/검색 기능
+ㄴ 리뷰 공유/병원 공유
+마이 페이지
+ㄴ 내가 쓴 리뷰/Q&A
+ㄴ 회원 탈퇴
+ㄴ 즐겨찾기한 병원
